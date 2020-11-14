@@ -30,6 +30,22 @@
 //|{15..14}	|13			|12	|11		|10			|{9..7}	|{6:4}			|{3:0}
 //|CS{1..0}	|set_mark?	|SS	|rsrvd	|loop_mode?	|nop?	|payload length	|middle ptr?
 
+//SS format
+//{31:30}	|29		|28		|27		|26		|25		|24
+//ipd		|eap	|bap	|srp	|vfdi	|crp(?)	|abgi
+//
+//23	|22		|21		|20		|19		|18		|17		|16
+//abgd	|abnf	|abnt	|type=0	|abpf	|abpt	|alcf	|alct
+//
+//15	|14		|13		|12		|{11:10}		|{8:0}
+//ASS02	|AASS03	|AASS14	|AASS15	|ctop(%ctpr)	|ctcond
+
+//SSv2 format
+//{31:30}	|{29:28}	|27		|26			|25		|20		|{5:0}
+//ipd		|invush_hi	|srp(?)	|invush_lo	|crp(?)	|type=1	|prednum(%pred)
+
+//More info at https://github.com/nrdmn/elbrus-docs
+
 struct hs_bits {
 	const char *name;
 	unsigned int size;
