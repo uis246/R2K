@@ -61,7 +61,7 @@ static int inslen(const ut8 *buf) {
 
 static bool addSyll(const ut32 hs, const int bit, const char *name, RStrBuf *sb) {
 	if(hs & (1<<bit)) {
-		r_strbuf_appendf(sb, " %s", name);
+		r_strbuf_appendf(sb, " %s;", name);
 		return true;
 	}
 	return false;
@@ -83,17 +83,19 @@ static void parseHS(const ut8 *buf, int oplen, RStrBuf *sb) {
 	cdscnt = (hs>>16)&3;
 	plscnt = (hs>>18)&3;
 	for(int i = (oplen-(pos+cdscnt+plscnt))/4; i > 0; i--) {
-		r_strbuf_appendf(sb, " LTS%u", i);
+		r_strbuf_appendf(sb, " LTS%u;", i);
 		pos += 4;
 	}
 	for(int i = plscnt; i > 0; i--) {
-		r_strbuf_appendf(sb, " PLS%u", i);
+		r_strbuf_appendf(sb, " PLS%u;", i);
 		pos += 4;
 	}
 	for(int i = cdscnt; i > 0; i--) {
-		r_strbuf_appendf(sb, " CDS%u", i);
+		r_strbuf_appendf(sb, " CDS%u;", i);
 		pos += 4;
 	}
+	if((hs>>7)&7)
+		r_strbuf_appendf(sb, " nop %u;", (hs>>7)&7);
 }
 
 static int disassemble(RAsm *as, RAsmOp *op, const ut8 *buf, int len) {
@@ -103,7 +105,7 @@ static int disassemble(RAsm *as, RAsmOp *op, const ut8 *buf, int len) {
 	if(ilen > len)
 		return -1;
 //	sprintf(op->buf_asm.buf, "Len: %d:", ilen);
-	r_strbuf_setf(&op->buf_asm, ";Len:%d: {", ilen);
+	r_strbuf_setf(&op->buf_asm, "; %d bytes: {", ilen);
 	parseHS(buf, ilen, &op->buf_asm);
 	r_strbuf_append(&op->buf_asm, " }");
 	return ilen;
