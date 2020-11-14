@@ -1,0 +1,6 @@
+#Blobs
+*.o
+*.so
+
+#QTCreator imported project
+R2K*
